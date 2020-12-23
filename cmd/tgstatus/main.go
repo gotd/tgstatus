@@ -207,6 +207,9 @@ func (s *Server) Check(ctx context.Context, dc DC) error {
 	}, backoff.NewExponentialBackOff()); err != nil {
 		return xerrors.Errorf("connect: %w", err)
 	}
+	defer func() {
+		_ = client.Close()
+	}()
 
 	start := time.Now()
 	if err := client.Ping(ctx); err != nil {

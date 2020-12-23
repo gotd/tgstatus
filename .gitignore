@@ -1,0 +1,7 @@
+.idea
+_bin/*
+
+*-fuzz.zip
+/cmd/tgstatus/tgstatus
+
+*.out

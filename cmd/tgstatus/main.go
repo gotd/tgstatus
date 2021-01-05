@@ -196,13 +196,13 @@ func (s *Server) Check(ctx context.Context, dc DC) error {
 		zap.Int64("check_id", start.Unix()*10+int64(dc.ID)),
 	)
 
-	client := telegram.NewClient(s.appID, s.appHash, telegram.Options{
-		Logger:         log,
-		SessionStorage: sess,
-		Addr:           dc.Addr(),
-	})
-	log.Debug("Connecting")
 	if err := backoff.Retry(func() error {
+		client := telegram.NewClient(s.appID, s.appHash, telegram.Options{
+			Logger:         log,
+			SessionStorage: sess,
+			Addr:           dc.Addr(),
+		})
+		log.Debug("Connecting")
 		return client.Run(ctx, func(ctx context.Context) error {
 			latency := time.Since(start)
 			log.Info("Connected", zap.Duration("latency", latency))
@@ -247,11 +247,12 @@ func (s *Server) CheckAll(ctx context.Context) error {
 }
 
 func (s *Server) Init(ctx context.Context) error {
-	client := telegram.NewClient(s.appID, s.appHash, telegram.Options{
-		Logger: s.log,
-	})
 
 	if err := backoff.Retry(func() error {
+		client := telegram.NewClient(s.appID, s.appHash, telegram.Options{
+			Logger: s.log,
+		})
+
 		return client.Run(ctx, func(ctx context.Context) error {
 			cfg, err := tg.NewClient(client).HelpGetConfig(ctx)
 			if err != nil {
@@ -298,10 +299,6 @@ func run(ctx context.Context) error {
 	}
 
 	go func() {
-		if err := server.Init(ctx); err != nil {
-			panic(err)
-		}
-
 		// Send initial check
 		if err := server.CheckAll(ctx); err != nil {
 			logger.Error("Failed to check", zap.Error(err))

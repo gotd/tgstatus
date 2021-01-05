@@ -4,7 +4,6 @@ package main
 import (
 	"bytes"
 	"context"
-	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -202,44 +201,25 @@ func (s *Server) Check(ctx context.Context, dc DC) error {
 		SessionStorage: sess,
 		Addr:           dc.Addr(),
 	})
-	defer func() {
-		log.Debug("Closing")
-		_ = client.Close()
-		log.Debug("Closed")
-	}()
-
 	log.Debug("Connecting")
 	if err := backoff.Retry(func() error {
-		log.Debug("Connecting (attempt)")
-		err := client.Connect(ctx)
-		select {
-		case <-ctx.Done():
-			err = ctx.Err()
-		default:
-			// ok
-		}
-		if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
-			err = backoff.Permanent(err)
-		}
-		if err != nil {
-			log.Debug("Connecting attempt failed", zap.Error(err))
-		}
-		return err
+		return client.Run(ctx, func(ctx context.Context) error {
+			latency := time.Since(start)
+			log.Info("Connected", zap.Duration("latency", latency))
+			s.stats.Consume(Metric{
+				Server:  dc,
+				Seen:    start,
+				Latency: latency,
+			})
+
+			return nil
+		})
 	}, backoff.NewExponentialBackOff()); err != nil {
 		s.stats.Consume(Metric{
 			Server: dc,
 		})
 		return xerrors.Errorf("connect: %w", err)
 	}
-
-	latency := time.Since(start)
-
-	log.Info("Connected", zap.Duration("latency", latency))
-	s.stats.Consume(Metric{
-		Server:  dc,
-		Seen:    start,
-		Latency: latency,
-	})
 
 	return nil
 }
@@ -272,23 +252,17 @@ func (s *Server) Init(ctx context.Context) error {
 	})
 
 	if err := backoff.Retry(func() error {
-		err := client.Connect(ctx)
-		if errors.Is(err, context.Canceled) {
-			err = backoff.Permanent(err)
-		}
-		return err
+		return client.Run(ctx, func(ctx context.Context) error {
+			cfg, err := tg.NewClient(client).HelpGetConfig(ctx)
+			if err != nil {
+				return xerrors.Errorf("config: %w", err)
+			}
+			s.cfg = *cfg
+			return nil
+		})
 	}, backoff.NewExponentialBackOff()); err != nil {
 		return xerrors.Errorf("connect: %w", err)
 	}
-	defer func() {
-		_ = client.Close()
-	}()
-
-	cfg, err := tg.NewClient(client).HelpGetConfig(ctx)
-	if err != nil {
-		return xerrors.Errorf("config: %w", err)
-	}
-	s.cfg = *cfg
 
 	return nil
 }

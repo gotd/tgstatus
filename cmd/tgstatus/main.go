@@ -20,6 +20,8 @@ import (
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/xerrors"
 
+	"github.com/gotd/td/session"
+
 	"github.com/gotd/td/telegram"
 	"github.com/gotd/td/tg"
 )
@@ -35,23 +37,23 @@ func (d DC) Addr() string {
 	return net.JoinHostPort(d.IP.String(), strconv.Itoa(d.Port))
 }
 
-type session struct {
+type sessionStorage struct {
 	mux      sync.Mutex
 	deadline time.Time
 	data     []byte
 }
 
-func (s *session) LoadSession(ctx context.Context) ([]byte, error) {
+func (s *sessionStorage) LoadSession(ctx context.Context) ([]byte, error) {
 	s.mux.Lock()
 	defer s.mux.Unlock()
 
 	if len(s.data) == 0 || time.Now().After(s.deadline) {
-		return nil, telegram.ErrSessionNotFound
+		return nil, session.ErrNotFound
 	}
 	return s.data, nil
 }
 
-func (s *session) StoreSession(ctx context.Context, data []byte) error {
+func (s *sessionStorage) StoreSession(ctx context.Context, data []byte) error {
 	s.mux.Lock()
 	defer s.mux.Unlock()
 
@@ -67,7 +69,7 @@ type Server struct {
 	appID    int
 	appHash  string
 	mux      sync.Mutex
-	sessions map[int]*session
+	sessions map[int]*sessionStorage
 
 	stats *State
 }
@@ -184,35 +186,52 @@ func (s *Server) Check(ctx context.Context, dc DC) error {
 	s.mux.Lock()
 	sess := s.sessions[dc.ID]
 	if sess == nil {
-		sess = &session{}
+		sess = &sessionStorage{}
 		s.sessions[dc.ID] = sess
 	}
 	s.mux.Unlock()
 
-	log := s.log.With(zap.Int("dc", dc.ID))
+	start := time.Now()
+	log := s.log.With(
+		zap.Int("check_dc", dc.ID),
+		zap.Int64("check_id", start.Unix()*10+int64(dc.ID)),
+	)
 
 	client := telegram.NewClient(s.appID, s.appHash, telegram.Options{
 		Logger:         log,
 		SessionStorage: sess,
 		Addr:           dc.Addr(),
 	})
+	defer func() {
+		log.Debug("Closing")
+		_ = client.Close()
+		log.Debug("Closed")
+	}()
+
+	log.Debug("Connecting")
 	if err := backoff.Retry(func() error {
+		log.Debug("Connecting (attempt)")
 		err := client.Connect(ctx)
-		if errors.Is(err, context.Canceled) {
+		select {
+		case <-ctx.Done():
+			err = ctx.Err()
+		default:
+			// ok
+		}
+		if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
 			err = backoff.Permanent(err)
+		}
+		if err != nil {
+			log.Debug("Connecting attempt failed", zap.Error(err))
 		}
 		return err
 	}, backoff.NewExponentialBackOff()); err != nil {
+		s.stats.Consume(Metric{
+			Server: dc,
+		})
 		return xerrors.Errorf("connect: %w", err)
 	}
-	defer func() {
-		_ = client.Close()
-	}()
 
-	start := time.Now()
-	if err := client.Ping(ctx); err != nil {
-		return xerrors.Errorf("failed to ping: %w", err)
-	}
 	latency := time.Since(start)
 
 	log.Info("Connected", zap.Duration("latency", latency))
@@ -226,7 +245,7 @@ func (s *Server) Check(ctx context.Context, dc DC) error {
 }
 
 func (s *Server) CheckAll(ctx context.Context) error {
-	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
+	ctx, cancel := context.WithTimeout(ctx, time.Second*30)
 	defer cancel()
 
 	g, gCtx := errgroup.WithContext(ctx)
@@ -275,7 +294,7 @@ func (s *Server) Init(ctx context.Context) error {
 }
 
 func run(ctx context.Context) error {
-	logger, _ := zap.NewDevelopment(zap.IncreaseLevel(zapcore.InfoLevel))
+	logger, _ := zap.NewDevelopment(zap.IncreaseLevel(zapcore.DebugLevel))
 	defer func() { _ = logger.Sync() }()
 
 	// Reading app id from env (never hardcode it!).
@@ -293,7 +312,7 @@ func run(ctx context.Context) error {
 		log:      logger,
 		appID:    appID,
 		appHash:  appHash,
-		sessions: map[int]*session{},
+		sessions: map[int]*sessionStorage{},
 
 		stats: &State{
 			status: map[int]dcStat{},
@@ -314,7 +333,7 @@ func run(ctx context.Context) error {
 			logger.Error("Failed to check", zap.Error(err))
 		}
 
-		ticker := time.NewTicker(time.Second * 10)
+		ticker := time.NewTicker(time.Second * 30)
 		for {
 			select {
 			case <-ctx.Done():
@@ -337,7 +356,7 @@ func run(ctx context.Context) error {
 		w.WriteHeader(http.StatusOK)
 
 		now := time.Now()
-		deadline := now.Add(-time.Second * 20)
+		deadline := now.Add(-time.Second * 60)
 
 		stats := server.stats.Status()
 		if len(stats) == 0 {

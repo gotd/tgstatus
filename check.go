@@ -2,6 +2,8 @@ package tgstatus
 
 import (
 	"context"
+	"net"
+	"strconv"
 	"sync"
 	"time"
 
@@ -18,14 +20,15 @@ type Check struct {
 	appHash string
 	rate    time.Duration
 	id      int
-	addr    string
+	ip      string
+	port    int
 	log     *zap.Logger
 	seen    time.Time
 }
 
 type Report struct {
 	ID   int
-	Addr string
+	IP   string
 	Seen time.Time
 }
 
@@ -34,7 +37,7 @@ func (c *Check) Report() Report {
 	defer c.mux.Unlock()
 	return Report{
 		ID:   c.id,
-		Addr: c.addr,
+		IP:   c.ip,
 		Seen: c.seen,
 	}
 }
@@ -56,7 +59,7 @@ func (c *Check) checkConnection(ctx context.Context, invoker tg.Invoker) error {
 func (c *Check) Run(ctx context.Context) error {
 	ticker := time.NewTicker(c.rate)
 	client := telegram.NewClient(c.appID, c.appHash, telegram.Options{
-		Addr:   c.addr,
+		Addr:   net.JoinHostPort(c.ip, strconv.Itoa(c.port)),
 		Logger: c.log,
 	})
 	return client.Run(ctx, func(ctx context.Context) error {

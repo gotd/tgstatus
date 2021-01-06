@@ -2,7 +2,6 @@ package tgstatus
 
 import (
 	"context"
-	"fmt"
 	"sync"
 	"time"
 
@@ -80,7 +79,7 @@ func (s *Status) Run(ctx context.Context) error {
 
 	s.mux.Lock()
 	for _, dc := range cfg.DCOptions {
-		if dc.Ipv6 || dc.TcpoOnly || dc.Static {
+		if dc.Ipv6 || dc.TcpoOnly || dc.Static || dc.MediaOnly {
 			continue
 		}
 
@@ -89,10 +88,11 @@ func (s *Status) Run(ctx context.Context) error {
 			appHash: s.appHash,
 			rate:    time.Second * 10,
 			id:      dc.ID,
-			addr:    fmt.Sprintf("%s:%d", dc.IPAddress, dc.Port),
+			ip:      dc.IPAddress,
+			port:    dc.Port,
 			log: s.log.With(
 				zap.Int("dc", dc.ID),
-				zap.String("addr", dc.IPAddress),
+				zap.String("ip", dc.IPAddress),
 			),
 		}
 		s.checks = append(s.checks, check)

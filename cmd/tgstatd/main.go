@@ -62,11 +62,11 @@ func run(ctx context.Context) error {
 		for _, dc := range reports {
 			if dc.Seen.After(deadline) {
 				fmt.Fprintf(w, "DC %02d: UP %s\n",
-					dc.ID, dc.Addr,
+					dc.ID, dc.IP,
 				)
 			} else {
 				fmt.Fprintf(w, "DC %02d: DOWN (%8s ago) %s\n",
-					dc.ID, formatAgo(now, dc.Seen), dc.Addr,
+					dc.ID, formatAgo(now, dc.Seen), dc.IP,
 				)
 			}
 		}

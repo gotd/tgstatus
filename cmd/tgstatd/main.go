@@ -3,6 +3,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -76,14 +77,23 @@ func run(ctx context.Context) error {
 
 	g, gCtx := errgroup.WithContext(ctx)
 	g.Go(func() error { return status.Run(gCtx) })
-	g.Go(func() error { return server.ListenAndServe() })
+	g.Go(func() error {
+		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			return err
+		}
+		return nil
+	})
 	g.Go(func() error {
 		<-gCtx.Done()
 		logger.Debug("Shutting down")
 		return server.Close()
 	})
 
-	return g.Wait()
+	if err := g.Wait(); err != nil && !errors.Is(err, context.Canceled) {
+		return err
+	}
+
+	return nil
 }
 
 func withSignal(ctx context.Context) (context.Context, context.CancelFunc) {

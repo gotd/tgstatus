@@ -2,6 +2,6 @@
 _bin/*
 
 *-fuzz.zip
-/cmd/tgstatus/tgstatus
+/cmd/tgstatd/tgstatd
 
 *.out

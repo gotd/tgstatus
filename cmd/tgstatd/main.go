@@ -2,6 +2,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -11,6 +12,9 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/povilasv/prommod"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
@@ -24,6 +28,21 @@ func formatAgo(now, seen time.Time) string {
 		return "long time"
 	}
 	return now.Sub(seen).Round(time.Second).String()
+}
+
+func groupServe(ctx context.Context, log *zap.Logger, g *errgroup.Group, server *http.Server) {
+	g.Go(func() error {
+		log.Info("ListenAndServe", zap.String("addr", server.Addr))
+		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			return err
+		}
+		return nil
+	})
+	g.Go(func() error {
+		<-ctx.Done()
+		log.Debug("Shutting down")
+		return server.Close()
+	})
 }
 
 func run(ctx context.Context) error {
@@ -43,51 +62,68 @@ func run(ctx context.Context) error {
 
 	status := tgstatus.New(appID, appHash, logger)
 
-	httpAddr := os.Getenv("HTTP_ADDR")
-	if httpAddr == "" {
-		httpAddr = ":8080"
-	}
+	registry := prometheus.NewPedanticRegistry()
+	registry.MustRegister(
+		prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}),
+		prometheus.NewGoCollector(),
+		prommod.NewCollector("tgstatd"),
+		status,
+	)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-
 		now := time.Now()
 		deadline := now.Add(-time.Second * 60)
 
+		var b bytes.Buffer
+
 		reports := status.Report()
 		if len(reports) == 0 {
-			fmt.Fprintln(w, "No stats available")
+			b.WriteString("No stats available")
 		}
 
 		for _, dc := range reports {
 			if dc.Seen.After(deadline) {
-				fmt.Fprintf(w, "DC %02d: UP %s\n",
+				fmt.Fprintf(&b, "DC %02d: UP %s\n",
 					dc.ID, dc.IP,
 				)
 			} else {
-				fmt.Fprintf(w, "DC %02d: DOWN (%8s ago) %s\n",
+				fmt.Fprintf(&b, "DC %02d: DOWN (%8s ago) %s\n",
 					dc.ID, formatAgo(now, dc.Seen), dc.IP,
 				)
 			}
 		}
-	})
 
-	server := &http.Server{Addr: httpAddr, Handler: mux}
+		_, _ = b.WriteTo(w)
+	})
 
 	g, gCtx := errgroup.WithContext(ctx)
 	g.Go(func() error { return status.Run(gCtx) })
-	g.Go(func() error {
-		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			return err
-		}
-		return nil
-	})
-	g.Go(func() error {
-		<-gCtx.Done()
-		logger.Debug("Shutting down")
-		return server.Close()
-	})
+
+	// Setting up http servers.
+	httpAddr := os.Getenv("HTTP_ADDR")
+	if httpAddr == "" {
+		httpAddr = ":8080"
+	}
+	metricsAddr := os.Getenv("METRICS_ADDR")
+	if metricsAddr == "" {
+		metricsAddr = "localhost:8081"
+	}
+
+	if metricsAddr == httpAddr {
+		// Serving metrics on same addr.
+		logger.Warn("Serving metrics on public endpoint")
+		mux.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
+	} else {
+		// Serving metrics on different addr.
+		metricsMux := http.NewServeMux()
+		metricsMux.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
+		metricsServer := &http.Server{Addr: metricsAddr, Handler: metricsMux}
+		groupServe(gCtx, logger.Named("http.metrics"), g, metricsServer)
+	}
+
+	server := &http.Server{Addr: httpAddr, Handler: mux}
+	groupServe(gCtx, logger.Named("http"), g, server)
 
 	if err := g.Wait(); err != nil && !errors.Is(err, context.Canceled) {
 		return err

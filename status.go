@@ -2,9 +2,11 @@ package tgstatus
 
 import (
 	"context"
+	"strconv"
 	"sync"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 
@@ -18,6 +20,24 @@ type Status struct {
 	log     *zap.Logger
 	mux     sync.Mutex
 	checks  []*Check
+
+	seen *prometheus.GaugeVec
+}
+
+func (s *Status) Describe(descs chan<- *prometheus.Desc) {
+	s.seen.Describe(descs)
+}
+
+func (s *Status) Collect(metrics chan<- prometheus.Metric) {
+	now := time.Now()
+
+	s.mux.Lock()
+	for _, c := range s.checks {
+		s.setMetric(now, c)
+	}
+	s.mux.Unlock()
+
+	s.seen.Collect(metrics)
 }
 
 func (s *Status) Report() []Report {
@@ -70,12 +90,21 @@ func (s *Status) config(ctx context.Context) (*tg.Config, error) {
 	}
 }
 
+func (s *Status) setMetric(now time.Time, c *Check) {
+	labels := prometheus.Labels{
+		"dc":   strconv.Itoa(c.id),
+		"addr": c.ip,
+	}
+	s.seen.With(labels).Set(now.Sub(c.Report().Seen).Seconds())
+}
+
 func (s *Status) Run(ctx context.Context) error {
 	cfg, err := s.config(ctx)
 	if err != nil {
 		return err
 	}
 	g, gCtx := errgroup.WithContext(ctx)
+	now := time.Now()
 
 	s.mux.Lock()
 	for _, dc := range cfg.DCOptions {
@@ -90,11 +119,13 @@ func (s *Status) Run(ctx context.Context) error {
 			id:      dc.ID,
 			ip:      dc.IPAddress,
 			port:    dc.Port,
+			seen:    now,
 			log: s.log.With(
 				zap.Int("dc", dc.ID),
 				zap.String("ip", dc.IPAddress),
 			),
 		}
+		s.setMetric(now, check)
 		s.checks = append(s.checks, check)
 		g.Go(func() error {
 			return check.Loop(gCtx)
@@ -110,5 +141,10 @@ func New(appID int, appHash string, log *zap.Logger) *Status {
 		appID:   appID,
 		appHash: appHash,
 		log:     log,
+
+		seen: prometheus.NewGaugeVec(prometheus.GaugeOpts{
+			Name: "telegram_dc_seen",
+			Help: "Seconds from last contact with server",
+		}, []string{"dc", "addr"}),
 	}
 }

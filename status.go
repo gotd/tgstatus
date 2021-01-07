@@ -92,8 +92,7 @@ func (s *Status) config(ctx context.Context) (*tg.Config, error) {
 
 func (s *Status) setMetric(now time.Time, c *Check) {
 	labels := prometheus.Labels{
-		"dc":   strconv.Itoa(c.id),
-		"addr": c.ip,
+		"dc": strconv.Itoa(c.id),
 	}
 	s.seen.With(labels).Set(now.Sub(c.Report().Seen).Seconds())
 }
@@ -122,7 +121,6 @@ func (s *Status) Run(ctx context.Context) error {
 			seen:    now,
 			log: s.log.With(
 				zap.Int("dc", dc.ID),
-				zap.String("ip", dc.IPAddress),
 			),
 		}
 		s.setMetric(now, check)
@@ -145,6 +143,6 @@ func New(appID int, appHash string, log *zap.Logger) *Status {
 		seen: prometheus.NewGaugeVec(prometheus.GaugeOpts{
 			Name: "telegram_dc_seen",
 			Help: "Seconds from last contact with server",
-		}, []string{"dc", "addr"}),
+		}, []string{"dc"}),
 	}
 }

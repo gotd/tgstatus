@@ -42,26 +42,58 @@ func (c *Check) Report() Report {
 	}
 }
 
+func (c *Check) updateAddrFromConfig(cfg *tg.Config) {
+	for _, dc := range cfg.DCOptions {
+		if dc.Ipv6 || dc.TcpoOnly || dc.Static || dc.MediaOnly {
+			continue
+		}
+		if dc.ID != c.id {
+			continue
+		}
+
+		c.mux.Lock()
+		if c.ip != dc.IPAddress {
+			c.log.Debug("Updating addr",
+				zap.String("addr_old", c.ip),
+				zap.String("addr_new", dc.IPAddress),
+			)
+			c.ip = dc.IPAddress
+			c.port = dc.Port
+		}
+		c.mux.Unlock()
+
+		break
+	}
+}
+
 func (c *Check) checkConnection(ctx context.Context, invoker tg.Invoker) error {
 	ctx, cancel := context.WithTimeout(ctx, time.Second*5)
 	defer cancel()
 
-	if _, err := tg.NewClient(invoker).HelpGetConfig(ctx); err != nil {
-		return err
+	cfg, err := tg.NewClient(invoker).HelpGetConfig(ctx)
+	if err != nil {
+		return xerrors.Errorf("getConfig: %w", err)
 	}
 
+	// IP can change over time.
+	c.updateAddrFromConfig(cfg)
+
 	// Success.
+	c.mux.Lock()
 	c.seen = time.Now()
+	c.mux.Unlock()
 
 	return nil
 }
 
 func (c *Check) Run(ctx context.Context) error {
 	ticker := time.NewTicker(c.rate)
+	c.mux.Lock()
 	client := telegram.NewClient(c.appID, c.appHash, telegram.Options{
 		Addr:   net.JoinHostPort(c.ip, strconv.Itoa(c.port)),
 		Logger: c.log,
 	})
+	c.mux.Unlock()
 	return client.Run(ctx, func(ctx context.Context) error {
 		for {
 			select {

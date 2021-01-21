@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/http/pprof"
 	"os"
 	"os/signal"
 	"strconv"
@@ -43,6 +44,19 @@ func groupServe(ctx context.Context, log *zap.Logger, g *errgroup.Group, server 
 		log.Debug("Shutting down")
 		return server.Close()
 	})
+}
+
+func attachProfiler(router *http.ServeMux) {
+	router.HandleFunc("/debug/pprof/", pprof.Index)
+	router.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	router.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	router.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+
+	// Manually add support for paths linked to by index page at /debug/pprof/
+	router.Handle("/debug/pprof/goroutine", pprof.Handler("goroutine"))
+	router.Handle("/debug/pprof/heap", pprof.Handler("heap"))
+	router.Handle("/debug/pprof/threadcreate", pprof.Handler("threadcreate"))
+	router.Handle("/debug/pprof/block", pprof.Handler("block"))
 }
 
 func run(ctx context.Context) error {
@@ -113,11 +127,13 @@ func run(ctx context.Context) error {
 	if metricsAddr == httpAddr {
 		// Serving metrics on same addr.
 		logger.Warn("Serving metrics on public endpoint")
+		attachProfiler(mux)
 		mux.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
 	} else {
 		// Serving metrics on different addr.
 		metricsMux := http.NewServeMux()
 		metricsMux.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
+		attachProfiler(metricsMux)
 		metricsServer := &http.Server{Addr: metricsAddr, Handler: metricsMux}
 		groupServe(gCtx, logger.Named("http.metrics"), g, metricsServer)
 	}

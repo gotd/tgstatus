@@ -3,7 +3,8 @@ module github.com/gotd/tgstatus
 go 1.15
 
 require (
-	github.com/gotd/td v0.21.1
+	github.com/go-bindata/go-bindata v3.1.2+incompatible // indirect
+	github.com/gotd/td v0.24.1-0.20210224073335-7ed426268790
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.9.0
 	go.uber.org/zap v1.16.0

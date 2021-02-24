@@ -148,25 +148,8 @@ func run(ctx context.Context) error {
 	return nil
 }
 
-func withSignal(ctx context.Context) (context.Context, context.CancelFunc) {
-	ctx, cancel := context.WithCancel(ctx)
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-	go func() {
-		select {
-		case <-c:
-			cancel()
-		case <-ctx.Done():
-		}
-	}()
-	return ctx, func() {
-		signal.Stop(c)
-		cancel()
-	}
-}
-
 func main() {
-	ctx, cancel := withSignal(context.Background())
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
 
 	if err := run(ctx); err != nil {

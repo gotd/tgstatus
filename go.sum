@@ -6,6 +6,7 @@ github.com/Julusian/godocdown v0.0.0-20170816220326-6d19f8ff2df8/go.mod h1:INZr5
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
 github.com/PuerkitoBio/goquery v1.6.0 h1:j7taAbelrdcsOlGeMenZxc2AWXD5fieT1/znArdnx94=
 github.com/PuerkitoBio/goquery v1.6.0/go.mod h1:GsLWisAFVj4WgDibEWF4pvYnkVQBpKBKeU+7zCJoLcc=
+github.com/PuerkitoBio/goquery v1.6.1/go.mod h1:GsLWisAFVj4WgDibEWF4pvYnkVQBpKBKeU+7zCJoLcc=
 github.com/Shopify/sarama v1.19.0/go.mod h1:FVkBWblsNy7DGZRfXLU0O9RCGt5g3g3yEuWXgklEdEo=
 github.com/Shopify/toxiproxy v2.1.4+incompatible/go.mod h1:OXgGpZ6Cli1/URJOF1DMxUHB2q5Ap20/P/eIdh4G0pI=
 github.com/VividCortex/gohistogram v1.0.0/go.mod h1:Pf5mBqqDxYaXu3hDrrU+w6nw50o/4+TcAqDqk/vUH7g=
@@ -117,12 +118,18 @@ github.com/gorilla/mux v1.6.2/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2z
 github.com/gorilla/mux v1.7.3/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
 github.com/gorilla/websocket v0.0.0-20170926233335-4201258b820c/go.mod h1:E7qHFY5m1UJ88s3WnNqhKjPHQ0heANvMoAMk2YaljkQ=
 github.com/gotd/getdoc v0.4.0/go.mod h1:AjLjQ5gdmIptXdjv6lYPHShv5f/dm/poa9wx3Kj/OdM=
+github.com/gotd/getdoc v0.6.0/go.mod h1:6hb7xxoTyjm+v3ZehmKlOiv6Zfodoff36wEhNqrSP+c=
+github.com/gotd/getdoc v0.6.1/go.mod h1:9+cZ403Gg7vgJ6m/Jbm7oZ6bM9sDrIRoeW2lwdEtxeY=
 github.com/gotd/ige v0.1.5 h1:qITql4hZpqPM/DSeO5IVlxzXJxrs4ZZiKRwPif2K76U=
 github.com/gotd/ige v0.1.5/go.mod h1:LbvqjUuGELVuHcKjfJZ2NPNzegICQU4eqrPAkXy0nTs=
 github.com/gotd/neo v0.1.1 h1:R0+UERZZubPcaQbA0sR6n2EV8uy6tt/0SpfUlKfQq+U=
 github.com/gotd/neo v0.1.1/go.mod h1:9A2a4bn9zL6FADufBdt7tZt+WMhvZoc5gWXihOPoiBQ=
 github.com/gotd/td v0.21.1 h1:WbcNpjgMRexJeiyKCK5JCmdyJe0XiT6PPsI06VmlE1o=
 github.com/gotd/td v0.21.1/go.mod h1:zn+ydzY4o4oHDazZTmpcYbUlKfEflI/Gjk4pdt93kQ8=
+github.com/gotd/td v0.23.1-0.20210216194651-69d324c7879a h1:dnXpTj2nUtSIIEK8anqwO1PUevOg4gyoOyjIm3l9+hU=
+github.com/gotd/td v0.23.1-0.20210216194651-69d324c7879a/go.mod h1:NdtnKGilDWADXHjCOS475mJ8vdkIkt+un7Un2wqt6t8=
+github.com/gotd/td v0.24.1-0.20210224073335-7ed426268790 h1:V8/wB6kREZkgNZjxySV/Agpvs0WFvBxZOKnBiI+ewlU=
+github.com/gotd/td v0.24.1-0.20210224073335-7ed426268790/go.mod h1:CviCWRfClXmufgLRpCg//mzcs5rEavNjJt8svj2tv70=
 github.com/gotd/tl v0.3.0/go.mod h1:9xGV9pH5N+LDoNmbeuOor9AjJaQzlj4KP5EguI1LMM8=
 github.com/gotd/xor v0.1.0/go.mod h1:ZTmdgqf6SOHder8/MFp9CNkXIadzID5lIiaZxRZICH0=
 github.com/gotd/xor v0.1.1 h1:LSPEeuf7noTo4fi4PrEsAaWXOSwjsY2e+IINPiR+c7s=
@@ -267,6 +274,7 @@ github.com/prometheus/procfs v0.0.8/go.mod h1:7Qr8sr6344vo1JqZ6HhLceV9o3AJ1Ff+Gx
 github.com/prometheus/procfs v0.1.3/go.mod h1:lV6e/gmhEcM9IjHGsFOCxxuZ+z1YqCvr4OA4YeYWdaU=
 github.com/prometheus/procfs v0.2.0 h1:wH4vA7pcjKuZzjF7lM8awk4fnuJO6idemZXoKnULUx4=
 github.com/prometheus/procfs v0.2.0/go.mod h1:lV6e/gmhEcM9IjHGsFOCxxuZ+z1YqCvr4OA4YeYWdaU=
+github.com/quasilyte/go-ruleguard/dsl v0.3.1/go.mod h1:KeCP03KrjuSO0H1kTuZQCWlQPulDV6YMIXmpQss17rU=
 github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
 github.com/robertkrimen/godocdown v0.0.0-20130622164427-0bfa04905481/go.mod h1:C9WhFzY47SzYBIvzFqSvHIR6ROgDo4TtdTuRaOMjF/s=
 github.com/rogpeppe/fastuuid v0.0.0-20150106093220-6724a57986af/go.mod h1:XWv6SoW27p1b0cqNHllgS5HIMJraePCO15w5zCzIWYg=

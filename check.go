@@ -92,6 +92,7 @@ func (c *Check) Run(ctx context.Context) error {
 	client := telegram.NewClient(c.appID, c.appHash, telegram.Options{
 		Addr:   net.JoinHostPort(c.ip, strconv.Itoa(c.port)),
 		Logger: c.log,
+		DC:     c.id,
 	})
 	c.mux.Unlock()
 	return client.Run(ctx, func(ctx context.Context) error {

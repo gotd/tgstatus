@@ -2,8 +2,6 @@ package tgstatus
 
 import (
 	"context"
-	"net"
-	"strconv"
 	"sync"
 	"time"
 
@@ -11,6 +9,7 @@ import (
 	"golang.org/x/xerrors"
 
 	"github.com/gotd/td/telegram"
+	"github.com/gotd/td/telegram/dcs"
 	"github.com/gotd/td/tg"
 )
 
@@ -21,6 +20,7 @@ type Check struct {
 	rate    time.Duration
 	id      int
 	ip      string
+	option  tg.DCOption
 	port    int
 	log     *zap.Logger
 	seen    time.Time
@@ -44,7 +44,7 @@ func (c *Check) Report() Report {
 
 func (c *Check) updateAddrFromConfig(cfg *tg.Config) {
 	for _, dc := range cfg.DCOptions {
-		if dc.Ipv6 || dc.TcpoOnly || dc.Static || dc.MediaOnly {
+		if dc.Ipv6 || dc.TCPObfuscatedOnly || dc.Static || dc.MediaOnly {
 			continue
 		}
 		if dc.ID != c.id {
@@ -58,6 +58,7 @@ func (c *Check) updateAddrFromConfig(cfg *tg.Config) {
 				zap.String("addr_new", dc.IPAddress),
 			)
 			c.ip = dc.IPAddress
+			c.option = dc
 			c.port = dc.Port
 		}
 		c.mux.Unlock()
@@ -90,9 +91,13 @@ func (c *Check) Run(ctx context.Context) error {
 	ticker := time.NewTicker(c.rate)
 	c.mux.Lock()
 	client := telegram.NewClient(c.appID, c.appHash, telegram.Options{
-		Addr:   net.JoinHostPort(c.ip, strconv.Itoa(c.port)),
 		Logger: c.log,
 		DC:     c.id,
+		DCList: dcs.List{
+			Options: []tg.DCOption{
+				c.option,
+			},
+		},
 	})
 	c.mux.Unlock()
 	return client.Run(ctx, func(ctx context.Context) error {

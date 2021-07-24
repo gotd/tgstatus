@@ -107,7 +107,7 @@ func (s *Status) Run(ctx context.Context) error {
 
 	s.mux.Lock()
 	for _, dc := range cfg.DCOptions {
-		if dc.Ipv6 || dc.TcpoOnly || dc.Static || dc.MediaOnly {
+		if dc.Ipv6 || dc.TCPObfuscatedOnly || dc.Static || dc.MediaOnly {
 			continue
 		}
 
@@ -116,6 +116,7 @@ func (s *Status) Run(ctx context.Context) error {
 			appHash: s.appHash,
 			rate:    time.Second * 10,
 			id:      dc.ID,
+			option:  dc,
 			ip:      dc.IPAddress,
 			port:    dc.Port,
 			seen:    now,

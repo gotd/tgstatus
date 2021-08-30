@@ -3,7 +3,7 @@ module github.com/gotd/tgstatus
 go 1.17
 
 require (
-	github.com/gotd/td v0.50.0-alpha.4
+	github.com/gotd/td v0.50.0
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.11.0
 	go.uber.org/zap v1.19.0

@@ -3,7 +3,7 @@ module github.com/gotd/tgstatus
 go 1.17
 
 require (
-	github.com/gotd/td v0.51.1
+	github.com/gotd/td v0.51.2
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.11.0
 	go.uber.org/zap v1.19.1
@@ -18,7 +18,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/gotd/ige v0.2.1 // indirect
-	github.com/gotd/neo v0.1.3 // indirect
+	github.com/gotd/neo v0.1.4 // indirect
 	github.com/gotd/xor v0.1.1 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect

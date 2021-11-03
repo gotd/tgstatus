@@ -4,7 +4,7 @@ package main
 import (
 	"bytes"
 	"context"
-	"errors"
+	"github.com/ogen-go/errors"
 	"fmt"
 	"net/http"
 	"net/http/pprof"
@@ -19,7 +19,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
-	"golang.org/x/xerrors"
+	"github.com/ogen-go/errors"
 
 	"github.com/gotd/tgstatus"
 )
@@ -66,12 +66,12 @@ func run(ctx context.Context) error {
 	// Reading app id from env (never hardcode it!).
 	appID, err := strconv.Atoi(os.Getenv("APP_ID"))
 	if err != nil {
-		return xerrors.Errorf("APP_ID not set or invalid: %w", err)
+		return errors.Wrap(err, "APP_ID not set or invalid")
 	}
 
 	appHash := os.Getenv("APP_HASH")
 	if appHash == "" {
-		return xerrors.New("no APP_HASH provided")
+		return errors.New("no APP_HASH provided")
 	}
 
 	status := tgstatus.New(appID, appHash, logger)

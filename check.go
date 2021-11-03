@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"go.uber.org/zap"
-	"golang.org/x/xerrors"
+	"github.com/ogen-go/errors"
 
 	"github.com/gotd/td/telegram"
 	"github.com/gotd/td/telegram/dcs"
@@ -73,7 +73,7 @@ func (c *Check) checkConnection(ctx context.Context, invoker tg.Invoker) error {
 
 	cfg, err := tg.NewClient(invoker).HelpGetConfig(ctx)
 	if err != nil {
-		return xerrors.Errorf("getConfig: %w", err)
+		return errors.Wrap(err, "getConfig")
 	}
 
 	// IP can change over time.
@@ -105,7 +105,7 @@ func (c *Check) Run(ctx context.Context) error {
 			select {
 			case <-ticker.C:
 				if err := c.checkConnection(ctx, client); err != nil {
-					return xerrors.Errorf("check: %w", err)
+					return errors.Wrap(err, "check")
 				}
 			case <-ctx.Done():
 				return ctx.Err()

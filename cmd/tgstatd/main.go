@@ -4,7 +4,6 @@ package main
 import (
 	"bytes"
 	"context"
-	"github.com/ogen-go/errors"
 	"fmt"
 	"net/http"
 	"net/http/pprof"
@@ -13,13 +12,15 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/ogen-go/errors"
+
+	"github.com/ogen-go/errors"
 	"github.com/povilasv/prommod"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
-	"github.com/ogen-go/errors"
 
 	"github.com/gotd/tgstatus"
 )

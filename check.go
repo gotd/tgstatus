@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"go.uber.org/zap"
 	"github.com/ogen-go/errors"
+	"go.uber.org/zap"
 
 	"github.com/gotd/td/telegram"
 	"github.com/gotd/td/telegram/dcs"

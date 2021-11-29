@@ -25,6 +25,12 @@ spec:
       containers:
         - name: bot
           image: ghcr.io/gotd/tgstatus:main
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: 8090
+            initialDelaySeconds: 2
+            periodSeconds: 3
           resources:
             requests:
               cpu: 500m

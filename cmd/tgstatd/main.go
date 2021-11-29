@@ -47,6 +47,10 @@ func groupServe(ctx context.Context, log *zap.Logger, g *errgroup.Group, server 
 }
 
 func attachProfiler(router *http.ServeMux) {
+	router.HandleFunc("/status", func(writer http.ResponseWriter, request *http.Request) {
+		writer.WriteHeader(http.StatusOK)
+	})
+
 	router.HandleFunc("/debug/pprof/", pprof.Index)
 	router.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
 	router.HandleFunc("/debug/pprof/profile", pprof.Profile)

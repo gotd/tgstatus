@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ogen-go/errors"
+	"github.com/go-faster/errors"
 	"go.uber.org/zap"
 
 	"github.com/gotd/td/telegram"

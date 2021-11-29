@@ -12,9 +12,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ogen-go/errors"
-
-	"github.com/ogen-go/errors"
+	"github.com/go-faster/errors"
 	"github.com/povilasv/prommod"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"

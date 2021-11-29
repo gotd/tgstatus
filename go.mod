@@ -3,20 +3,19 @@ module github.com/gotd/tgstatus
 go 1.17
 
 require (
+	github.com/go-faster/errors v0.5.0
 	github.com/gotd/td v0.52.0
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.11.0
 	go.uber.org/zap v1.19.1
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 )
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
-	github.com/go-faster/errors v0.5.0 // indirect
 	github.com/go-faster/xor v0.3.0 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/gotd/ige v0.2.2 // indirect

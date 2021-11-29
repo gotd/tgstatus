@@ -5,3 +5,6 @@ _bin/*
 /cmd/tgstatd/tgstatd
 
 *.out
+
+/tgstatd
+.k8s/deployment.*.yml

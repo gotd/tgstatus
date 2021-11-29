@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: gotd
+  name: status
+  labels:
+    app: status
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: status
+  template:
+    metadata:
+      labels:
+        app: status
+      annotations:
+        "io.cilium.proxy-visibility": "<Egress/53/UDP/DNS>,<Egress/80/TCP/HTTP>"
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8090'
+    spec:
+      volumes:
+        - name: cache
+          emptyDir: {}
+      containers:
+        - name: bot
+          image: ghcr.io/gotd/tgstatus:main
+          resources:
+            requests:
+              cpu: 500m
+              memory: 128M
+            limits:
+              cpu: 500m
+              memory: 128M
+          env:
+            - name: HOME
+              value: /cache
+            - name: HTTP_ADDR
+              value: 0.0.0.0:8080
+            - name: METRICS_ADDR
+              value: 0.0.0.0:8090
+          volumeMounts:
+            - mountPath: /cache
+              name: cache

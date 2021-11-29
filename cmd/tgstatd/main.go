@@ -15,6 +15,7 @@ import (
 	"github.com/go-faster/errors"
 	"github.com/povilasv/prommod"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -77,8 +78,8 @@ func run(ctx context.Context) error {
 
 	registry := prometheus.NewPedanticRegistry()
 	registry.MustRegister(
-		prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}),
-		prometheus.NewGoCollector(),
+		collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}),
+		collectors.NewGoCollector(),
 		prommod.NewCollector("tgstatd"),
 		status,
 	)

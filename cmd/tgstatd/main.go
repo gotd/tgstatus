@@ -9,7 +9,6 @@ import (
 	"net/http/pprof"
 	"os"
 	"os/signal"
-	"strconv"
 	"time"
 
 	"github.com/go-faster/errors"
@@ -20,6 +19,8 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
+
+	"github.com/gotd/td/telegram"
 
 	"github.com/gotd/tgstatus"
 	"github.com/gotd/tgstatus/internal/api"
@@ -69,18 +70,7 @@ func run(ctx context.Context) error {
 	logger, _ := zap.NewDevelopment(zap.IncreaseLevel(zapcore.DebugLevel))
 	defer func() { _ = logger.Sync() }()
 
-	// Reading app id from env (never hardcode it!).
-	appID, err := strconv.Atoi(os.Getenv("APP_ID"))
-	if err != nil {
-		return errors.Wrap(err, "APP_ID not set or invalid")
-	}
-
-	appHash := os.Getenv("APP_HASH")
-	if appHash == "" {
-		return errors.New("no APP_HASH provided")
-	}
-
-	status := tgstatus.New(appID, appHash, logger)
+	status := tgstatus.New(telegram.TestAppID, telegram.TestAppHash, logger)
 
 	registry := prometheus.NewPedanticRegistry()
 	registry.MustRegister(

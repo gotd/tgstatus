@@ -45,16 +45,6 @@ spec:
               value: 0.0.0.0:8080
             - name: METRICS_ADDR
               value: 0.0.0.0:8090
-            - name: APP_ID
-              valueFrom:
-                secretKeyRef:
-                  name: bot
-                  key: APP_ID
-            - name: APP_HASH
-              valueFrom:
-                secretKeyRef:
-                  name: bot
-                  key: APP_HASH
           volumeMounts:
             - mountPath: /cache
               name: cache

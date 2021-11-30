@@ -22,6 +22,8 @@ import (
 	"golang.org/x/sync/errgroup"
 
 	"github.com/gotd/tgstatus"
+	"github.com/gotd/tgstatus/internal/api"
+	"github.com/gotd/tgstatus/internal/oas"
 )
 
 func formatAgo(now, seen time.Time) string {
@@ -89,6 +91,7 @@ func run(ctx context.Context) error {
 	)
 
 	mux := http.NewServeMux()
+	mux.Handle("/api/v1/", oas.NewServer(&api.Handler{}))
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		deadline := now.Add(-time.Second * 60)

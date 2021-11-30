@@ -1,0 +1,56 @@
+openapi: 3.0.3
+info:
+  title: Telegram Status
+  description: Telegram Status
+  version: 1.0.0
+servers:
+  - url: 'https://status.gotd.dev'
+paths:
+  /api/v1/status:
+    get:
+      operationId: "status"
+      responses:
+        200:
+          description: "Telegram Servers Status"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Status"
+components:
+  schemas:
+    Status:
+      type: object
+      properties:
+        locations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Location"
+    Location:
+      type: object
+      required:
+        - id
+        - services
+      properties:
+        id:
+          type: integer
+        services:
+          type: array
+          items:
+            $ref: "#/components/schemas/Service"
+    Service:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - Online
+            - Offline
+        ip_v4:
+          type: string
+          format: ipv4
+        ip_v6:
+          type: string
+          format: ipv6
+

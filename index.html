@@ -11,23 +11,12 @@
     }
 
     :root {
-      --bgcolor: white;
-      --fontcolor: #444;
-      --linkcolor: #00e;
-      --visitedcolor: #551a8b;
+      --bgcolor: #000409;
+      --fontcolor: #c9d1d9;
+      --linkcolor: #58a6ff;
+      --visitedcolor: #58a6ff;
       --precolor: #fff;
       --prebgcolor: #000;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bgcolor: black;
-        --fontcolor: white;
-        --linkcolor: #5bf;
-        --visitedcolor: #ae5ee0;
-        --precolor: #fff;
-        --prebgcolor: #383838;
-      }
     }
 
     body {
@@ -91,15 +80,34 @@
     main {
       display: flex;
       flex-flow: row wrap;
-      align-items: flex-start;
-      align-content: flex-start;
-      justify-content: flex-start;
+      align-items: center;
+      align-content: center;
+      justify-content: center;
     }
 
     .dc {
-      min-width: 200px;
+      min-width: 180px;
       margin: 10px;
-      padding: 0 5px;
+      padding: 10px;
+
+      background-color: rgb(13, 17, 23);
+      border-bottom-color: rgb(48, 54, 61);
+      border-bottom-style: solid;
+      border-bottom-width: 1px;
+      border-left-color: rgb(48, 54, 61);
+      border-left-style: solid;
+      border-left-width: 1px;
+      border-right-color: rgb(48, 54, 61);
+      border-right-style: solid;
+      border-right-width: 1px;
+      border-top-color: rgb(48, 54, 61);
+      border-radius: 1px;
+      border-top-style: solid;
+      border-top-width: 1px;
+    }
+
+    .dc h1, .dc p {
+      margin: 5px;
     }
 
   </style>
@@ -131,6 +139,9 @@
       {% else %}
       <b>OFFLINE</b> ({{ Ago(now, dc.Seen) }})
       {% end %}
+    </p>
+    <p class="ip">
+      {{ dc.IP }}
     </p>
   </div>
 {% end %}

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    html {
+      overflow-y: scroll
+    }
+
+    :root {
+      --bgcolor: white;
+      --fontcolor: #444;
+      --linkcolor: #00e;
+      --visitedcolor: #551a8b;
+      --precolor: #fff;
+      --prebgcolor: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bgcolor: black;
+        --fontcolor: white;
+        --linkcolor: #5bf;
+        --visitedcolor: #ae5ee0;
+        --precolor: #fff;
+        --prebgcolor: #383838;
+      }
+    }
+
+    body {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 10px;
+      font: 14px/1.5 monospace;
+      color: var(--fontcolor);
+      background: var(--bgcolor)
+    }
+
+    a:link {
+      color: var(--linkcolor)
+    }
+
+    a:visited {
+      color: var(--visitedcolor)
+    }
+
+    a:active {
+      color: var(--visitedcolor)
+    }
+
+    h1, h2, h3 {
+      line-height: 1.2
+    }
+
+    p > code {
+      color: var(--precolor);
+      background: var(--prebgcolor);
+      padding: 2px
+    }
+
+    pre {
+      color: var(--precolor);
+      background: var(--prebgcolor);
+      padding: 24px;
+      overflow-x: auto
+    }
+
+    article {
+      padding: 24px 0
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    figcaption {
+      color: #888;
+      font: 12px/1.5 monospace;
+      text-align: center;
+    }
+
+    figure {
+      margin: auto
+    }
+
+    main {
+      display: flex;
+      flex-flow: row wrap;
+      align-items: flex-start;
+      align-content: flex-start;
+      justify-content: flex-start;
+    }
+
+    .dc {
+      min-width: 200px;
+      margin: 10px;
+      padding: 0 5px;
+    }
+
+  </style>
+
+  <title>Telegram Status</title>
+</head>
+
+<body>
+<header>
+  =====================<br>
+  == Telegram Status ==<br>
+  =====================
+  <div style="float: right;">Unofficial Telegram Status Page</div><br>
+</header>
+
+<main>
+{% now := Now() %}
+{% deadline := now.Add(-Timeout) %}
+{% reports := Reports() %}
+{% if not reports %}
+  <h2>Status server is starting</h2>
+{% end %}
+{% for dc in Reports() %}
+  <div class="dc">
+    <h1>DC: {{ dc.ID }}</h1>
+    <p>Status:
+      {% if dc.Seen.After(deadline) %}
+      <b>ONLINE</b>
+      {% else %}
+      <b>OFFLINE</b> ({{ Ago(now, dc.Seen) }})
+      {% end %}
+    </p>
+  </div>
+{% end %}
+</main>
+
+<footer>
+<p>Built with <a href="https://github.com/gotd/td"><b>gotd/td</b></a>;
+  github: <a href="https://github.com/gotd/tgstatus"><b>gotd/tgstatus</b></a>.
+</p>
+</footer>
+
+</body>
+</html>

@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"github.com/go-faster/errors"
+	"github.com/open2b/scriggo"
+	"github.com/open2b/scriggo/native"
 	"github.com/povilasv/prommod"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
@@ -67,10 +69,23 @@ func attachProfiler(router *http.ServeMux) {
 }
 
 func run(ctx context.Context) error {
-	logger, _ := zap.NewDevelopment(zap.IncreaseLevel(zapcore.DebugLevel))
-	defer func() { _ = logger.Sync() }()
+	lg, _ := zap.NewDevelopment(zap.IncreaseLevel(zapcore.DebugLevel))
+	defer func() { _ = lg.Sync() }()
 
-	status := tgstatus.New(telegram.TestAppID, telegram.TestAppHash, logger)
+	status := tgstatus.New(telegram.TestAppID, telegram.TestAppHash, lg)
+
+	fs := scriggo.Files{"index.html": tgstatus.Web}
+	tpl, err := scriggo.BuildTemplate(fs, "index.html", &scriggo.BuildOptions{
+		Globals: native.Declarations{
+			"Reports": status.Report,
+			"Timeout": time.Minute,
+			"Ago":     formatAgo,
+			"Now":     time.Now,
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "build template")
+	}
 
 	registry := prometheus.NewPedanticRegistry()
 	registry.MustRegister(
@@ -83,6 +98,13 @@ func run(ctx context.Context) error {
 	mux := http.NewServeMux()
 	mux.Handle("/api/v1/", oas.NewServer(&api.Handler{}))
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("content-type", "text/html; charset=utf-8")
+
+		if err := tpl.Run(w, nil, nil); err != nil {
+			lg.Error("Template run", zap.Error(err))
+		}
+	})
+	mux.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		deadline := now.Add(-time.Second * 60)
 
@@ -123,7 +145,7 @@ func run(ctx context.Context) error {
 
 	if metricsAddr == httpAddr {
 		// Serving metrics on same addr.
-		logger.Warn("Serving metrics on public endpoint")
+		lg.Warn("Serving metrics on public endpoint")
 		attachProfiler(mux)
 		mux.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
 	} else {
@@ -132,11 +154,11 @@ func run(ctx context.Context) error {
 		metricsMux.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
 		attachProfiler(metricsMux)
 		metricsServer := &http.Server{Addr: metricsAddr, Handler: metricsMux}
-		groupServe(gCtx, logger.Named("http.metrics"), g, metricsServer)
+		groupServe(gCtx, lg.Named("http.metrics"), g, metricsServer)
 	}
 
 	server := &http.Server{Addr: httpAddr, Handler: mux}
-	groupServe(gCtx, logger.Named("http"), g, server)
+	groupServe(gCtx, lg.Named("http"), g, server)
 
 	if err := g.Wait(); err != nil && !errors.Is(err, context.Canceled) {
 		return err

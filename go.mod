@@ -4,21 +4,19 @@ go 1.17
 
 require (
 	github.com/go-faster/errors v0.5.0
-	github.com/gotd/td v0.53.0-alpha.2
-	github.com/ogen-go/ogen v0.0.0-20211126101943-1a0241a88b1c
-	github.com/povilasv/prommod v0.0.12
-	github.com/prometheus/client_golang v1.11.0
-	go.uber.org/zap v1.19.1
-	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a // indirect
-	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-)
-
-require (
 	github.com/go-faster/jx v0.25.0
 	github.com/google/uuid v1.3.0
+	github.com/gotd/td v0.53.0-alpha.2
+	github.com/ogen-go/ogen v0.0.0-20211126101943-1a0241a88b1c
+	github.com/open2b/scriggo v0.53.4
+	github.com/povilasv/prommod v0.0.12
+	github.com/prometheus/client_golang v1.11.0
 	go.opentelemetry.io/otel v1.2.0
 	go.opentelemetry.io/otel/metric v0.25.0
 	go.opentelemetry.io/otel/trace v1.2.0
+	go.uber.org/zap v1.19.1
+	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a // indirect
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 )
 
 require (

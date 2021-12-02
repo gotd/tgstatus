@@ -4,11 +4,11 @@ package main
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"net/http"
 	"net/http/pprof"
 	"os"
 	"os/signal"
+	"sync/atomic"
 	"time"
 
 	"github.com/go-faster/errors"
@@ -95,39 +95,27 @@ func run(ctx context.Context) error {
 		status,
 	)
 
+	// Cache status page and update it in background.
+	var page atomic.Value
+	render := func() {
+		buf := new(bytes.Buffer)
+		if err := tpl.Run(buf, nil, nil); err != nil {
+			lg.Error("Template run", zap.Error(err))
+		}
+		page.Store(buf.Bytes())
+	}
+	render()
+	go func() {
+		for range time.NewTicker(time.Second).C {
+			render()
+		}
+	}()
+
 	mux := http.NewServeMux()
 	mux.Handle("/api/v1/", oas.NewServer(&api.Handler{}))
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("content-type", "text/html; charset=utf-8")
-
-		if err := tpl.Run(w, nil, nil); err != nil {
-			lg.Error("Template run", zap.Error(err))
-		}
-	})
-	mux.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {
-		now := time.Now()
-		deadline := now.Add(-time.Second * 60)
-
-		var b bytes.Buffer
-
-		reports := status.Report()
-		if len(reports) == 0 {
-			b.WriteString("No stats available")
-		}
-
-		for _, dc := range reports {
-			if dc.Seen.After(deadline) {
-				fmt.Fprintf(&b, "DC %02d: UP %s\n",
-					dc.ID, dc.IP,
-				)
-			} else {
-				fmt.Fprintf(&b, "DC %02d: DOWN (%8s ago) %s\n",
-					dc.ID, formatAgo(now, dc.Seen), dc.IP,
-				)
-			}
-		}
-
-		_, _ = b.WriteTo(w)
+		_, _ = w.Write(page.Load().([]byte))
 	})
 
 	g, gCtx := errgroup.WithContext(ctx)

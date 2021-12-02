@@ -21,7 +21,7 @@
 
     body {
       max-width: 800px;
-      margin: 40px auto;
+      margin: 5px auto;
       padding: 0 10px;
       font: 14px/1.5 monospace;
       color: var(--fontcolor);
@@ -80,9 +80,9 @@
     main {
       display: flex;
       flex-flow: row wrap;
-      align-items: center;
-      align-content: center;
-      justify-content: center;
+      align-items: flex-start;
+      align-content: flex-start;
+      justify-content: flex-start;
     }
 
     .dc {
@@ -117,10 +117,7 @@
 
 <body>
 <header>
-  =====================<br>
-  == Telegram Status ==<br>
-  =====================
-  <div style="float: right;">Unofficial Telegram Status Page</div><br>
+  <div>Unofficial Telegram Status Page</div>
 </header>
 
 <main>
@@ -132,7 +129,7 @@
 {% end %}
 {% for dc in Reports() %}
   <div class="dc">
-    <h1>DC: {{ dc.ID }}</h1>
+    <h1>DC {{ dc.ID }}</h1>
     <p>Status:
       {% if dc.Seen.After(deadline) %}
       <b>ONLINE</b>

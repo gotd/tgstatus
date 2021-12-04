@@ -578,8 +578,16 @@
       border-top-width: 1px;
     }
 
-    .dc h1, .dc p {
+    .dc h1, .dc p, .dc h2 {
       margin: 5px;
+    }
+
+    .dc h2 {
+      color: var(--color-fg-muted);
+    }
+
+    .dc .location {
+      color: var(--color-fg-muted);
     }
 
 
@@ -649,14 +657,19 @@
   <h2>Status server is starting</h2>
 {% end %}
 {% for dc in reports %}
+  {% m := Meta[dc.ID] %}
   <div class="dc">
     <h1>DC {{ dc.ID }}</h1>
+    <h2>{{ m.Name }}</h2>
     <p>
       {% if dc.Seen.After(deadline) %}
       <span class="label label--up"><b>ONLINE</b></span>
       {% else %}
       <span class="label label--down"><b>DOWN</b> {{ Ago(now, dc.Seen) }}</span>
       {% end %}
+    </p>
+    <p class="location">
+      {{ m.City }}, <b>{{ m.Country }}</b>
     </p>
     <p class="ip">
       {{ dc.IP }}

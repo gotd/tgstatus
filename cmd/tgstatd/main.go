@@ -68,12 +68,45 @@ func attachProfiler(router *http.ServeMux) {
 	router.Handle("/debug/pprof/block", pprof.Handler("block"))
 }
 
+type Meta struct {
+	City    string // Miami
+	Country string // USA
+	Name    string // pluto, venus
+}
+
 func run(ctx context.Context) error {
 	lg, _ := zap.NewDevelopment(zap.IncreaseLevel(zapcore.DebugLevel))
 	defer func() { _ = lg.Sync() }()
 
 	status := tgstatus.New(telegram.TestAppID, telegram.TestAppHash, lg)
 
+	meta := map[int]Meta{
+		1: {
+			Name:    "pluto",
+			City:    "Miami",
+			Country: "USA",
+		},
+		2: {
+			Name:    "venus",
+			City:    "Amsterdam",
+			Country: "NL",
+		},
+		3: {
+			Name:    "aurora",
+			Country: "USA",
+			City:    "Miami",
+		},
+		4: {
+			Name:    "vesta",
+			Country: "NL",
+			City:    "Amsterdam",
+		},
+		5: {
+			Name:    "flora",
+			Country: "SG",
+			City:    "Singapore",
+		},
+	}
 	fs := scriggo.Files{"index.html": tgstatus.Web}
 	tpl, err := scriggo.BuildTemplate(fs, "index.html", &scriggo.BuildOptions{
 		Globals: native.Declarations{
@@ -81,6 +114,7 @@ func run(ctx context.Context) error {
 			"Timeout": time.Minute,
 			"Ago":     formatAgo,
 			"Now":     time.Now,
+			"Meta":    &meta,
 		},
 	})
 	if err != nil {

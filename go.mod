@@ -6,7 +6,7 @@ require (
 	github.com/go-faster/errors v0.5.0
 	github.com/go-faster/jx v0.25.0
 	github.com/google/uuid v1.3.0
-	github.com/gotd/td v0.53.0-alpha.2
+	github.com/gotd/td v0.53.0
 	github.com/ogen-go/ogen v0.0.0-20211126101943-1a0241a88b1c
 	github.com/open2b/scriggo v0.53.4
 	github.com/povilasv/prommod v0.0.12

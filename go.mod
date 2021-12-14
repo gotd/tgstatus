@@ -6,7 +6,7 @@ require (
 	github.com/go-faster/errors v0.5.0
 	github.com/go-faster/jx v0.25.0
 	github.com/google/uuid v1.3.0
-	github.com/gotd/td v0.53.0-alpha.2
+	github.com/gotd/td v0.54.0-alpha.0
 	github.com/ogen-go/ogen v0.0.0-20211126101943-1a0241a88b1c
 	github.com/open2b/scriggo v0.53.4
 	github.com/povilasv/prommod v0.0.12
@@ -40,7 +40,7 @@ require (
 	github.com/prometheus/procfs v0.6.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
-	golang.org/x/net v0.0.0-20210916014120-12bc252f5db8 // indirect
+	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f // indirect
 	golang.org/x/sys v0.0.0-20211103235746-7861aae1554b // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/protobuf v1.26.0-rc.1 // indirect

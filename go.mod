@@ -6,7 +6,7 @@ require (
 	github.com/go-faster/errors v0.5.0
 	github.com/go-faster/jx v0.25.0
 	github.com/google/uuid v1.3.0
-	github.com/gotd/td v0.54.0-alpha.3
+	github.com/gotd/td v0.54.1
 	github.com/ogen-go/ogen v0.0.0-20211126101943-1a0241a88b1c
 	github.com/open2b/scriggo v0.53.4
 	github.com/povilasv/prommod v0.0.12
@@ -30,7 +30,7 @@ require (
 	github.com/goccy/go-yaml v1.9.4 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/gotd/ige v0.2.2 // indirect
-	github.com/gotd/neo v0.1.4 // indirect
+	github.com/gotd/neo v0.1.5 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/mattn/go-colorable v0.1.11 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect

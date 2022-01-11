@@ -147,8 +147,8 @@ github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRW
 github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f/go.mod h1:qRWi+5nqEBWmkhHvq77mSJWrCKwh8bxhgT7d/eI7P4U=
 github.com/ogen-go/ogen v0.0.0-20211126101943-1a0241a88b1c h1:1LsWdRKecRmfBkFKt/wtQyajxtpDDNRmT/4Wp8F+WHI=
 github.com/ogen-go/ogen v0.0.0-20211126101943-1a0241a88b1c/go.mod h1:b30KYUTj30mV20YdJNI+jPc6f2SVFH+GpqiABuV5/Fc=
-github.com/open2b/scriggo v0.53.4 h1:oVmAwcLZHpz0bulnyJTR0ZJviCT2aDWRSzUqLoEhtYk=
-github.com/open2b/scriggo v0.53.4/go.mod h1:BT/Y/AXiydiLxhbfupynMyF0n2L9/qB57jTbu5+fgh4=
+github.com/open2b/scriggo v0.53.5 h1:zqol8SFmd6qEgdwly00Pk1M6WliNm7l7A8URqZzuky0=
+github.com/open2b/scriggo v0.53.5/go.mod h1:BT/Y/AXiydiLxhbfupynMyF0n2L9/qB57jTbu5+fgh4=
 github.com/pkg/diff v0.0.0-20210226163009-20ebb0f2a09e/go.mod h1:pJLUxLENpZxwdsKMEsNbx1VGcRFpLqf3715MtcvvzbA=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=

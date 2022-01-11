@@ -8,7 +8,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/gotd/td v0.54.0-alpha.3
 	github.com/ogen-go/ogen v0.0.0-20211126101943-1a0241a88b1c
-	github.com/open2b/scriggo v0.53.4
+	github.com/open2b/scriggo v0.53.5
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.11.0
 	go.opentelemetry.io/otel v1.3.0

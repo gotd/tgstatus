@@ -25,8 +25,6 @@ import (
 	"github.com/gotd/td/telegram"
 
 	"github.com/gotd/tgstatus"
-	"github.com/gotd/tgstatus/internal/api"
-	"github.com/gotd/tgstatus/internal/oas"
 )
 
 func formatAgo(now, seen time.Time) string {
@@ -146,7 +144,6 @@ func run(ctx context.Context) error {
 	}()
 
 	mux := http.NewServeMux()
-	mux.Handle("/api/v1/", oas.NewServer(&api.Handler{}))
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("content-type", "text/html; charset=utf-8")
 		_, _ = w.Write(page.Load().([]byte))

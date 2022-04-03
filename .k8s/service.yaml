@@ -14,22 +14,26 @@ spec:
   selector:
     app: status
   sessionAffinity: None
-  type: ClusterIP
-
 ---
-apiVersion: projectcontour.io/v1
-kind: HTTPProxy
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  labels:
-    app: status
   name: status
   namespace: gotd
+  annotations:
+    # use the shared ingress-nginx
+    kubernetes.io/ingress.class: "nginx"
+  labels:
+    app: status
 spec:
-  virtualhost:
-    fqdn: status.gotd.dev
-  routes:
-    - conditions:
-        - prefix: /
-      services:
-        - name: status
-          port: 80
+  rules:
+  - host: status.gotd.dev
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: status
+            port:
+              number: 80

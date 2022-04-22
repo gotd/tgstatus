@@ -73,7 +73,7 @@ type Meta struct {
 }
 
 func run(ctx context.Context) error {
-	lg, _ := zap.NewDevelopment(zap.IncreaseLevel(zapcore.DebugLevel))
+	lg, _ := zap.NewProduction(zap.IncreaseLevel(zapcore.DebugLevel))
 	defer func() { _ = lg.Sync() }()
 
 	status := tgstatus.New(telegram.TestAppID, telegram.TestAppHash, lg)

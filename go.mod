@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/go-faster/errors v0.5.0
 	github.com/go-faster/jx v0.33.0 // indirect
-	github.com/gotd/td v0.58.0
+	github.com/gotd/td v0.59.0
 	github.com/open2b/scriggo v0.53.5
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.12.1
@@ -24,7 +24,7 @@ require (
 	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/gotd/ige v0.2.2 // indirect
 	github.com/gotd/neo v0.1.5 // indirect
-	github.com/klauspost/compress v1.15.2 // indirect
+	github.com/klauspost/compress v1.15.4 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.32.1 // indirect

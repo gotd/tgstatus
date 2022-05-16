@@ -8,7 +8,7 @@ require (
 	github.com/gotd/td v0.59.0
 	github.com/open2b/scriggo v0.53.5
 	github.com/povilasv/prommod v0.0.12
-	github.com/prometheus/client_golang v1.12.1
+	github.com/prometheus/client_golang v1.12.2
 	go.uber.org/zap v1.21.0
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c

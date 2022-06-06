@@ -67,8 +67,8 @@ github.com/gin-contrib/sse v0.1.0 h1:Y/yl/+YNO8GZSjAhjMsSuLt29uWRFHdHYUb5lYOV9qE
 github.com/gin-contrib/sse v0.1.0/go.mod h1:RHrZQHXnP2xjPF+u1gW/2HnVO7nvIa9PG3Gm+fLHvGI=
 github.com/gin-gonic/gin v1.6.3 h1:ahKqKTFpO5KTPHxWZjEdPScmYaGtLo8Y4DMHoEsnp14=
 github.com/gin-gonic/gin v1.6.3/go.mod h1:75u5sXoLsGZoRN5Sgbi1eraJ4GU3++wFwWzhwvtwp4M=
-github.com/go-faster/errors v0.5.0 h1:hS/zHFJ2Vb14jcupq5J9tk05XW+PFTmySOkDRByHBo4=
-github.com/go-faster/errors v0.5.0/go.mod h1:/9SNBcg2ESJTYztBFEiM5Np6ns85BtPNMJd8lFTiFwk=
+github.com/go-faster/errors v0.6.1 h1:nNIPOBkprlKzkThvS/0YaX8Zs9KewLCOSFQS5BU06FI=
+github.com/go-faster/errors v0.6.1/go.mod h1:5MGV2/2T9yvlrbhe9pD9LO5Z/2zCSq2T8j+Jpi2LAyY=
 github.com/go-faster/jx v0.33.0 h1:YTiLVjpeVr7Zv66BivgBGa3f33a7cup8uFleiBg82qY=
 github.com/go-faster/jx v0.33.0/go.mod h1:Ya1ynk3qKb3R7bJwORf0QggETqlOvLO1Owjr3R4crqk=
 github.com/go-faster/xor v0.3.0 h1:tc0bdVe31Wj999e5rEj7K3DhHyQNp2VydYyLFj3YSN8=

@@ -3,7 +3,7 @@ module github.com/gotd/tgstatus
 go 1.18
 
 require (
-	github.com/go-faster/errors v0.5.0
+	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v0.33.0 // indirect
 	github.com/gotd/td v0.59.0
 	github.com/open2b/scriggo v0.53.5

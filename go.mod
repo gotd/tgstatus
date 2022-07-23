@@ -6,7 +6,7 @@ require (
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v0.38.0 // indirect
 	github.com/gotd/td v0.61.0
-	github.com/open2b/scriggo v0.54.0
+	github.com/open2b/scriggo v0.55.0
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.12.2
 	go.uber.org/zap v1.21.0

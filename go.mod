@@ -4,8 +4,8 @@ go 1.18
 
 require (
 	github.com/go-faster/errors v0.6.1
-	github.com/go-faster/jx v0.38.0 // indirect
-	github.com/gotd/td v0.61.0
+	github.com/go-faster/jx v0.38.1 // indirect
+	github.com/gotd/td v0.62.0
 	github.com/open2b/scriggo v0.55.0
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.12.2
@@ -23,14 +23,14 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/gotd/ige v0.2.2 // indirect
 	github.com/gotd/neo v0.1.5 // indirect
-	github.com/klauspost/compress v1.15.7 // indirect
+	github.com/klauspost/compress v1.15.9 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.32.1 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
-	go.opentelemetry.io/otel v1.7.0 // indirect
-	go.opentelemetry.io/otel/trace v1.7.0 // indirect
+	go.opentelemetry.io/otel v1.8.0 // indirect
+	go.opentelemetry.io/otel/trace v1.8.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f // indirect

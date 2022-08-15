@@ -9,7 +9,7 @@ require (
 	github.com/open2b/scriggo v0.56.1
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.13.0
-	go.uber.org/zap v1.21.0
+	go.uber.org/zap v1.22.0
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
 )

@@ -8,7 +8,7 @@ require (
 	github.com/gotd/td v0.73.0
 	github.com/open2b/scriggo v0.56.1
 	github.com/povilasv/prommod v0.0.12
-	github.com/prometheus/client_golang v1.13.0
+	github.com/prometheus/client_golang v1.14.0
 	go.uber.org/zap v1.24.0
 	golang.org/x/crypto v0.3.0 // indirect
 	golang.org/x/sync v0.1.0
@@ -25,7 +25,7 @@ require (
 	github.com/gotd/neo v0.1.5 // indirect
 	github.com/klauspost/compress v1.15.12 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
-	github.com/prometheus/client_model v0.2.0 // indirect
+	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect

@@ -1,3 +1,3 @@
 #!/bin/sh
 
-echo "${KUBECONFIG}" | base64 -d > /tmp/kubeconfig
+echo "${KUBE}" | base64 -d > /tmp/kubeconfig

@@ -4,13 +4,13 @@ go 1.18
 
 require (
 	github.com/go-faster/errors v0.6.1
-	github.com/go-faster/jx v1.0.1 // indirect
-	github.com/gotd/td v0.84.0
+	github.com/go-faster/jx v1.1.0 // indirect
+	github.com/gotd/td v0.85.0
 	github.com/open2b/scriggo v0.56.1
 	github.com/povilasv/prommod v0.0.12
 	github.com/prometheus/client_golang v1.16.0
 	go.uber.org/zap v1.25.0
-	golang.org/x/crypto v0.11.0 // indirect
+	golang.org/x/crypto v0.12.0 // indirect
 	golang.org/x/sync v0.3.0
 )
 
@@ -33,8 +33,8 @@ require (
 	go.opentelemetry.io/otel/trace v1.16.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/net v0.12.0 // indirect
-	golang.org/x/sys v0.10.0 // indirect
+	golang.org/x/net v0.14.0 // indirect
+	golang.org/x/sys v0.11.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
 	rsc.io/qr v0.2.0 // indirect
